@@ -1,0 +1,56 @@
+<!-- https://stackoverflow.com/questions/15972912/converting-svg-path-to-polygon-in-javascript -->
+<svg
+  version="1.1"
+  id="Ebene_1"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  x="0px"
+  y="0px"
+  width="425.2px"
+  height="303.31px"
+  viewBox="0 0 425.2 303.31"
+  enable-background="new 0 0 425.2 303.31"
+  xml:space="preserve"
+>
+  <g>
+    <path
+      id="path"
+      fill="#FFFFFF"
+      stroke="#000000"
+      stroke-miterlimit="10"
+      d="M256.768,227.211h-33.013l4.902-65.682l-40.357,59.06
+		l-26.654-37.931l0.292-0.298L264.865,77.415L256.768,227.211z
+    M224.833,226.211h30.987l7.903-146.205L162.942,182.764
+		l25.346,36.069l41.643-60.94L224.833,226.211z"
+    />
+  </g>
+</svg>
+
+<script>
+  // total length of path from start to end
+  var len = path.getTotalLength();
+  // the object that represents the point at x
+  var p = path.getPointAtLength(0);
+  // the object that represents the segment at x
+  var seg = path.getPathSegAtLength(0);
+  // the x and y coordinate of the point object
+  var stp = p.x + "," + p.y;
+
+  // var i = 1 - initialise the index
+  // i < len - compare i to total length of path from start to end
+  // i++ - increment i
+  for (var i = 1; i < len; i++) {
+    // get the next object that represents the point at i
+    p = path.getPointAtLength(i);
+
+    // if the new seg is greater than the previous seg
+    // what does that even mean?? what is being compared.
+    if (path.getPathSegAtLength(i) > seg) {
+      // append the new x and y coordinate
+      stp = stp + " " + p.x + "," + p.y;
+      // Increment seg to the current one, for comparison in the next iteration.
+      seg = path.getPathSegAtLength(i);
+    }
+  }
+</script>
+{}
