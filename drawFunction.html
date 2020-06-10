@@ -1,0 +1,72 @@
+<!-- Guided by -->
+<!-- https://chanind.github.io/javascript/svg/2019/01/13/manipulating-and-animating-svg-with-raw-javascript.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="svg-container"></div>
+  </body>
+  <script>
+    const svgContainer = document.getElementById("svg-container");
+    const svgNode = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "svg"
+    );
+    svgNode.setAttributeNS(null, "viewBox", "0 0 250 250");
+    svgContainer.appendChild(svgNode);
+
+    const numColumns = 5; // value from user
+    const numRows = 5; // value from user
+
+    var maxWidth = window.innerWidth;
+    var lineLength = 0;
+
+    if (maxWidth / numColumns > 50) {
+      // maximum length
+      lineLength = 50;
+    } else if (maxWidth / numColumns < 50) {
+      // minimum length
+      lineLength = 20;
+    } else {
+      // standard length
+      lineLength = 30;
+    }
+
+    var shifted = true; // value from user
+    for (let i = 0; i < numColumns; i++) {
+      var x = lineLength;
+      for (let j = 0; j < numRows; j++) {
+        const lineNode = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "line"
+        );
+        lineNode.setAttribute("stroke", "black");
+        if (shifted) {
+          // Shifted is true so move the first line away from the border
+          i++;
+          lineNode.setAttribute("x1", x);
+          lineNode.setAttribute("x2", x);
+          lineNode.setAttribute("y1", lineLength * i);
+          lineNode.setAttribute("y2", lineLength * (i + 1));
+        } else {
+          // Shifted is false so start the line next to the border
+          lineNode.setAttribute("x1", x);
+          lineNode.setAttribute("x2", x);
+          lineNode.setAttribute("y1", lineLength * i);
+          lineNode.setAttribute("y2", lineLength);
+        }
+        i++;
+        svgNode.appendChild(lineNode);
+      }
+      // *******************************************************
+      // Demonstration only
+      // Mock code to pretend that the user has made a decision
+      //   shifted = Math.random() >= 0.5;
+      // Demonstration only
+      // *******************************************************
+    }
+  </script>
+</html>
