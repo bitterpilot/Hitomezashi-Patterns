@@ -115,6 +115,10 @@
             j++;
           }
 
+          if (lineLength * j > vBoxWidth) {
+            continue;
+          }
+
           const lineNode = document.createElementNS(
             "http://www.w3.org/2000/svg",
             "line"
@@ -126,6 +130,7 @@
           lineNode.setAttribute("y2", lineLength * (j + 1));
 
           svgNode.appendChild(lineNode);
+
           if (!mod) {
             j++;
           }
@@ -154,6 +159,10 @@
         for (let j = 0; j <= numRows; j++) {
           if (mod) {
             j++;
+          }
+
+          if (lineLength * j > vBoxHeight) {
+            continue;
           }
 
           const lineNode = document.createElementNS(
