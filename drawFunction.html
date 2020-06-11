@@ -7,7 +7,7 @@
     <title>Document</title>
     <meta
       http-equiv="refresh"
-      content="90; URL=file:///Users/nathan/Documents/Hitomezashi-Patterns/drawFunction.html"
+      content="60; URL=file:///Users/nathan/Documents/Hitomezashi-Patterns/drawFunction.html"
     />
     <style>
       line {
@@ -42,31 +42,43 @@
     drawBoundingBox();
     drawInternalSegments();
 
+    function _lineString(x1, y1, x2, y2) {
+      // Draws a straight line using the path element
+      // "M x1 y1 L x2 y2"
+      return `M ${x1} ${y1} L ${x2} ${y2}`;
+    }
+
     function drawBoundingBox() {
       // -------------------------------------
       // Draw Top and bottom
       for (let j = 0; j <= numRows; j++) {
         const upperLineNode = document.createElementNS(
           "http://www.w3.org/2000/svg",
-          "line"
+          "path"
         );
+
         upperLineNode.setAttribute("stroke", "red");
-        upperLineNode.setAttribute("x1", lineLength * j);
-        upperLineNode.setAttribute("x2", lineLength * (j + 1));
-        upperLineNode.setAttribute("y1", 0);
-        upperLineNode.setAttribute("y2", 0);
+        upperLineNode.setAttribute(
+          "d",
+          _lineString(lineLength * j, 0, lineLength * (j + 1), 0)
+        );
+
         svgNode.appendChild(upperLineNode);
 
         const lowerlineNode = document.createElementNS(
           "http://www.w3.org/2000/svg",
-          "line"
+          "path"
         );
         lowerlineNode.setAttribute("stroke", "red");
-        lowerlineNode.setAttribute("x1", lineLength * j);
-        lowerlineNode.setAttribute("x2", lineLength * (j + 1));
-        lowerlineNode.setAttribute("y1", vBoxHeight + lineLength);
-        lowerlineNode.setAttribute("y2", vBoxHeight + lineLength);
-
+        lowerlineNode.setAttribute(
+          "d",
+          _lineString(
+            lineLength * j,
+            vBoxHeight + lineLength,
+            lineLength * (j + 1),
+            vBoxHeight + lineLength
+          )
+        );
         svgNode.appendChild(lowerlineNode);
       }
       // -------------------------------------
@@ -74,24 +86,29 @@
       for (let j = 0; j <= numRows; j++) {
         const leftLineNode = document.createElementNS(
           "http://www.w3.org/2000/svg",
-          "line"
+          "path"
         );
         leftLineNode.setAttribute("stroke", "red");
-        leftLineNode.setAttribute("x1", 0);
-        leftLineNode.setAttribute("x2", 0);
-        leftLineNode.setAttribute("y1", lineLength * j);
-        leftLineNode.setAttribute("y2", lineLength * (j + 1));
+        leftLineNode.setAttribute(
+          "d",
+          _lineString(0, lineLength * j, 0, lineLength * (j + 1))
+        );
         svgNode.appendChild(leftLineNode);
 
         const lowerlineNode = document.createElementNS(
           "http://www.w3.org/2000/svg",
-          "line"
+          "path"
         );
         lowerlineNode.setAttribute("stroke", "red");
-        lowerlineNode.setAttribute("y1", lineLength * j);
-        lowerlineNode.setAttribute("y2", lineLength * (j + 1));
-        lowerlineNode.setAttribute("x1", vBoxWidth + lineLength);
-        lowerlineNode.setAttribute("x2", vBoxWidth + lineLength);
+        lowerlineNode.setAttribute(
+          "d",
+          _lineString(
+            vBoxWidth + lineLength,
+            lineLength * j,
+            vBoxWidth + lineLength,
+            lineLength * (j + 1)
+          )
+        );
 
         svgNode.appendChild(lowerlineNode);
       }
@@ -121,14 +138,13 @@
 
           const lineNode = document.createElementNS(
             "http://www.w3.org/2000/svg",
-            "line"
+            "path"
           );
           lineNode.setAttribute("stroke", "black");
-          lineNode.setAttribute("x1", x);
-          lineNode.setAttribute("x2", x);
-          lineNode.setAttribute("y1", lineLength * j);
-          lineNode.setAttribute("y2", lineLength * (j + 1));
-
+          lineNode.setAttribute(
+            "d",
+            _lineString(x, lineLength * j, x, lineLength * (j + 1))
+          );
           svgNode.appendChild(lineNode);
 
           if (!mod) {
@@ -167,14 +183,13 @@
 
           const lineNode = document.createElementNS(
             "http://www.w3.org/2000/svg",
-            "line"
+            "path"
           );
           lineNode.setAttribute("stroke", "black");
-          lineNode.setAttribute("x1", lineLength * j);
-          lineNode.setAttribute("x2", lineLength * (j + 1));
-          lineNode.setAttribute("y1", y);
-          lineNode.setAttribute("y2", y);
-
+          lineNode.setAttribute(
+            "d",
+            _lineString(lineLength * j, y, lineLength * (j + 1), y)
+          );
           svgNode.appendChild(lineNode);
 
           if (!mod) {
