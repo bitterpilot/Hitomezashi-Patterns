@@ -9,99 +9,95 @@
       http-equiv="refresh"
       content="90; URL=file:///Users/nathan/Documents/Hitomezashi-Patterns/drawFunction.html"
     />
+    <style>
+      line {
+        stroke-width: 2px;
+      }
+    </style>
   </head>
   <body>
     <div id="svg-container"></div>
   </body>
   <script>
     // Initialising data
-    const numColumns = 5 - 1; // value from user 5 take one to account for 0 index
-    const numRows = 5 - 1; // value from user
+    const numColumns = 15 - 1; // value from user 5 take 2 to account for 0 index
+    const numRows = 15 - 1; // value from user
 
-    // var maxWidth = window.innerWidth;
-    var lineLength = 50;
+    var lineLength = 40;
 
-    // if (maxWidth / numColumns > 50) {
-    //   // maximum length
-    //   lineLength = 50;
-    // } else if (maxWidth / numColumns < 50) {
-    //   // minimum length
-    //   lineLength = 20;
-    // } else {
-    //   // standard length
-    //   lineLength = 30;
-    // }
+    vBoxWidth = lineLength * numColumns;
+    vBoxHeight = lineLength * numRows;
+    vBox = "".concat("-1 -1 ", vBoxWidth + 100, " ", vBoxHeight + 100);
 
-    // blah blah calculate view box
     const svgContainer = document.getElementById("svg-container");
     const svgNode = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "svg"
     );
-    svgNode.setAttributeNS(null, "viewBox", "0 0 250 250");
+    svgNode.setAttribute("viewBox", vBox);
+    svgNode.setAttribute("width", vBoxWidth);
+    svgNode.setAttribute("height", vBoxHeight);
     svgContainer.appendChild(svgNode);
 
-    var mod = true;
-    // -----------------------------------------------------------------------
-    // Draw Y-axis
-    // -----------------------------------------------------------------------
-    for (let i = 1; i <= numColumns; i++) {
-      var x = lineLength * i;
-      for (let j = 0; j <= numRows; j++) {
-        if (mod) {
-          j++;
-        }
+    drawBoundingBox();
+    drawInternalSegments();
 
-        const lineNode = document.createElementNS(
+    function drawBoundingBox() {
+      // -------------------------------------
+      // Draw Top and bottom
+      for (let j = 0; j <= numRows; j++) {
+        const upperLineNode = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "line"
         );
-        lineNode.setAttribute("stroke", "green");
-        lineNode.setAttribute("x1", x);
-        lineNode.setAttribute("x2", x);
-        lineNode.setAttribute("y1", lineLength * j);
-        lineNode.setAttribute("y2", lineLength * (j + 1));
+        upperLineNode.setAttribute("stroke", "red");
+        upperLineNode.setAttribute("x1", lineLength * j);
+        upperLineNode.setAttribute("x2", lineLength * (j + 1));
+        upperLineNode.setAttribute("y1", 0);
+        upperLineNode.setAttribute("y2", 0);
+        svgNode.appendChild(upperLineNode);
 
-        svgNode.appendChild(lineNode);
-        if (!mod) {
-          j++;
-        }
+        const lowerlineNode = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "line"
+        );
+        lowerlineNode.setAttribute("stroke", "red");
+        lowerlineNode.setAttribute("x1", lineLength * j);
+        lowerlineNode.setAttribute("x2", lineLength * (j + 1));
+        lowerlineNode.setAttribute("y1", vBoxHeight + lineLength);
+        lowerlineNode.setAttribute("y2", vBoxHeight + lineLength);
+
+        svgNode.appendChild(lowerlineNode);
       }
-      // *******************************************************
-      // Demonstration only
-      // Mock code to pretend that the user has made a decision
-      // mod = !mod;
-      mod = Math.random() >= 0.5;
-      // Demonstration only
-      // *******************************************************
+      // -------------------------------------
+      // Draw Left and right
+      for (let j = 0; j <= numRows; j++) {
+        const leftLineNode = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "line"
+        );
+        leftLineNode.setAttribute("stroke", "red");
+        leftLineNode.setAttribute("x1", 0);
+        leftLineNode.setAttribute("x2", 0);
+        leftLineNode.setAttribute("y1", lineLength * j);
+        leftLineNode.setAttribute("y2", lineLength * (j + 1));
+        svgNode.appendChild(leftLineNode);
+
+        const lowerlineNode = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "line"
+        );
+        lowerlineNode.setAttribute("stroke", "red");
+        lowerlineNode.setAttribute("y1", lineLength * j);
+        lowerlineNode.setAttribute("y2", lineLength * (j + 1));
+        lowerlineNode.setAttribute("x1", vBoxWidth + lineLength);
+        lowerlineNode.setAttribute("x2", vBoxWidth + lineLength);
+
+        svgNode.appendChild(lowerlineNode);
+      }
     }
-    var mod = true;
-    // -----------------------------------------------------------------------
-    // Draw x-axis
-    // -----------------------------------------------------------------------
-    for (let i = 1; i <= numColumns; i++) {
-      var y = lineLength * i;
-      for (let j = 0; j <= numRows; j++) {
-        if (mod) {
-          j++;
-        }
 
-        const lineNode = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "line"
-        );
-        lineNode.setAttribute("stroke", "red");
-        lineNode.setAttribute("x1", lineLength * j);
-        lineNode.setAttribute("x2", lineLength * (j + 1));
-        lineNode.setAttribute("y1", y);
-        lineNode.setAttribute("y2", y);
-
-        svgNode.appendChild(lineNode);
-
-        if (!mod) {
-          j++;
-        }
-      }
+    function drawInternalSegments() {
       // *******************************************************
       // Demonstration only
       // Mock code to pretend that the user has made a decision
@@ -109,6 +105,81 @@
       mod = Math.random() >= 0.5;
       // Demonstration only
       // *******************************************************
+      // -----------------------------------------------------------------------
+      // Draw Y-axis
+      // -----------------------------------------------------------------------
+      for (let i = 1; i <= numColumns; i++) {
+        var x = lineLength * i;
+        for (let j = 0; j <= numRows; j++) {
+          if (mod) {
+            j++;
+          }
+
+          const lineNode = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "line"
+          );
+          lineNode.setAttribute("stroke", "black");
+          lineNode.setAttribute("x1", x);
+          lineNode.setAttribute("x2", x);
+          lineNode.setAttribute("y1", lineLength * j);
+          lineNode.setAttribute("y2", lineLength * (j + 1));
+
+          svgNode.appendChild(lineNode);
+          if (!mod) {
+            j++;
+          }
+        }
+        // *******************************************************
+        // Demonstration only
+        // Mock code to pretend that the user has made a decision
+        // mod = !mod;
+        mod = Math.random() >= 0.5;
+        // Demonstration only
+        // *******************************************************
+      }
+
+      // -----------------------------------------------------------------------
+      // Draw x-axis
+      // -----------------------------------------------------------------------
+      // *******************************************************
+      // Demonstration only
+      // Mock code to pretend that the user has made a decision
+      // mod = !mod;
+      mod = Math.random() >= 0.5;
+      // Demonstration only
+      // *******************************************************
+      for (let i = 1; i <= numColumns; i++) {
+        var y = lineLength * i;
+        for (let j = 0; j <= numRows; j++) {
+          if (mod) {
+            j++;
+          }
+
+          const lineNode = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "line"
+          );
+          lineNode.setAttribute("stroke", "black");
+          lineNode.setAttribute("x1", lineLength * j);
+          lineNode.setAttribute("x2", lineLength * (j + 1));
+          lineNode.setAttribute("y1", y);
+          lineNode.setAttribute("y2", y);
+
+          svgNode.appendChild(lineNode);
+
+          if (!mod) {
+            j++;
+          }
+        }
+        // *******************************************************
+        // Demonstration only
+        // Mock code to pretend that the user has made a decision
+        // mod = !mod;
+        mod = Math.random() >= 0.5;
+        // Demonstration only
+        // *******************************************************
+      }
     }
   </script>
 </html>
