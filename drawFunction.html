@@ -5,11 +5,34 @@
   <head>
     <meta charset="UTF-8" />
     <title>Document</title>
+    <meta
+      http-equiv="refresh"
+      content="90; URL=file:///Users/nathan/Documents/Hitomezashi-Patterns/drawFunction.html"
+    />
   </head>
   <body>
     <div id="svg-container"></div>
   </body>
   <script>
+    // Initialising data
+    const numColumns = 5 - 1; // value from user 5 take one to account for 0 index
+    const numRows = 5 - 1; // value from user
+
+    // var maxWidth = window.innerWidth;
+    var lineLength = 50;
+
+    // if (maxWidth / numColumns > 50) {
+    //   // maximum length
+    //   lineLength = 50;
+    // } else if (maxWidth / numColumns < 50) {
+    //   // minimum length
+    //   lineLength = 20;
+    // } else {
+    //   // standard length
+    //   lineLength = 30;
+    // }
+
+    // blah blah calculate view box
     const svgContainer = document.getElementById("svg-container");
     const svgNode = document.createElementNS(
       "http://www.w3.org/2000/svg",
@@ -18,55 +41,34 @@
     svgNode.setAttributeNS(null, "viewBox", "0 0 250 250");
     svgContainer.appendChild(svgNode);
 
-    const numColumns = 5; // value from user
-    const numRows = 5; // value from user
-
-    var maxWidth = window.innerWidth;
-    var lineLength = 0;
-
-    if (maxWidth / numColumns > 50) {
-      // maximum length
-      lineLength = 50;
-    } else if (maxWidth / numColumns < 50) {
-      // minimum length
-      lineLength = 20;
-    } else {
-      // standard length
-      lineLength = 30;
-    }
-
-    var shifted = true; // value from user
-    for (let i = 0; i < numColumns; i++) {
-      var x = lineLength;
-      for (let j = 0; j < numRows; j++) {
-        const lineNode = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "line"
-        );
-        lineNode.setAttribute("stroke", "black");
-        if (shifted) {
-          // Shifted is true so move the first line away from the border
-          i++;
+    var mod = false;
+    for (let i = 1; i <= numColumns; i++) {
+      var x = lineLength * i;
+      // -----------------------------------------------------------------------
+      // Draw Y-axis
+      // -----------------------------------------------------------------------
+      for (let j = 0; j <= numRows; j++) {
+        if (mod) {
+          const lineNode = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "line"
+          );
+          lineNode.setAttribute("stroke", "black");
           lineNode.setAttribute("x1", x);
           lineNode.setAttribute("x2", x);
-          lineNode.setAttribute("y1", lineLength * i);
-          lineNode.setAttribute("y2", lineLength * (i + 1));
-        } else {
-          // Shifted is false so start the line next to the border
-          lineNode.setAttribute("x1", x);
-          lineNode.setAttribute("x2", x);
-          lineNode.setAttribute("y1", lineLength * i);
-          lineNode.setAttribute("y2", lineLength);
+          lineNode.setAttribute("y1", lineLength * j);
+          lineNode.setAttribute("y2", lineLength * (j + 1));
+
+          svgNode.appendChild(lineNode);
         }
-        i++;
-        svgNode.appendChild(lineNode);
+        // *******************************************************
+        // Demonstration only
+        // Mock code to pretend that the user has made a decision
+        // shifted = Math.random() >= 0.5;
+        mod = !mod;
+        // Demonstration only
+        // *******************************************************
       }
-      // *******************************************************
-      // Demonstration only
-      // Mock code to pretend that the user has made a decision
-      //   shifted = Math.random() >= 0.5;
-      // Demonstration only
-      // *******************************************************
     }
   </script>
 </html>
