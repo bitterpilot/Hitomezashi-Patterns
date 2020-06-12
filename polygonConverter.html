@@ -1,0 +1,62 @@
+<!-- https://stackoverflow.com/questions/39402918/convert-path-from-svg-to-polyline -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <style>
+      path {
+        fill: none;
+        stroke: black;
+        stroke-width: 1;
+      }
+
+      polygon {
+        fill: none;
+        stroke: green;
+        stroke-width: 0.5;
+      }
+    </style>
+  </head>
+  <body>
+    <svg viewBox="-25 -25 100 100">
+      <path class="myPath" d="M 0 0 L 0 50" />
+      <path class="myPath" d="M 0 50 L 50 50" />
+      <path class="myPath" d="M 50 50 L 50 0" />
+      <path class="myPath" d="M 50 0 L 0 0" />
+      <polygon id="myPolygon" points="" />
+    </svg>
+  </body>
+
+  <script>
+    var myPaths = document.getElementsByClassName("myPath");
+    var numPoints = myPaths.length;
+
+    var pathLength = 0;
+    for (var i = 0; i < numPoints; i++) {
+      pathLength = pathLength + myPaths[i].getTotalLength();
+    }
+
+    var polygonPoints = [];
+    for (var i = 0; i < numPoints; i++) {
+      // If this the zeroth item then the above code will get the point at length 0.
+      //   i.e. the point at the beginning of the line.
+      //   In the second loop it will get the point at the end of the line
+      var p = myPaths[i].getPointAtLength((i * pathLength) / numPoints);
+      polygonPoints.push(p.x);
+      polygonPoints.push(p.y);
+
+      // So if this is the first loop also get the point at the end of the line.
+      if (i == 0) {
+        var p = myPaths[i].getPointAtLength((1 * pathLength) / numPoints);
+        polygonPoints.push(p.x);
+        polygonPoints.push(p.y);
+      }
+    }
+
+    console.log(polygonPoints);
+
+    var myPolygon = document.getElementById("myPolygon");
+    myPolygon.setAttribute("points", polygonPoints.join(","));
+  </script>
+</html>
