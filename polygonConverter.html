@@ -33,7 +33,7 @@
   </body>
 
   <script>
-    // polygonise();
+    polygonise();
 
     function polygonise() {
       var myPaths = document.getElementsByClassName("myPath");
@@ -45,6 +45,7 @@
       }
 
       var polygonPoints = [];
+      var visited = [];
       for (var i = 0; i < numPoints; i++) {
         // If this the zeroth item then the above code will get the point at length 0.
         //   i.e. the point at the beginning of the line.
@@ -52,6 +53,7 @@
         var p = myPaths[i].getPointAtLength((i * pathLength) / numPoints);
         polygonPoints.push(p.x);
         polygonPoints.push(p.y);
+        visited.push(myPaths[i]);
 
         // So if this is the first loop also get the point at the end of the line.
         if (i == 0) {
@@ -63,6 +65,15 @@
 
       var myPolygon = document.getElementById("myPolygon");
       myPolygon.setAttribute("points", polygonPoints.join(","));
+      removePaths(visited);
+    }
+    function removePaths(pathList) {
+      pathList.forEach(function (path) {
+        deletePath(path);
+      });
+    }
+    function deletePath(path) {
+      path.remove();
     }
   </script>
 </html>
