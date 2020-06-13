@@ -15,6 +15,12 @@
       path.borderSeg {
         stroke: red;
       }
+
+      #myPolygon {
+        stroke-width: 2;
+        stroke: royalblue;
+        fill: transparent;
+      }
     </style>
   </head>
   <body>
@@ -290,4 +296,48 @@
       <path class="internalSeg" d="M 560 560 L 600 560"></path>
     </svg>
   </body>
+  <script>
+    polygonise();
+
+    function polygonise() {
+      var myPaths = document.getElementsByClassName("myPath");
+      var numPoints = myPaths.length;
+
+      var pathLength = 0;
+      for (var i = 0; i < numPoints; i++) {
+        pathLength = pathLength + myPaths[i].getTotalLength();
+      }
+
+      var polygonPoints = [];
+      var visited = [];
+      for (var i = 0; i < numPoints; i++) {
+        // If this the zeroth item then the above code will get the point at length 0.
+        //   i.e. the point at the beginning of the line.
+        //   In the second loop it will get the point at the end of the line
+        var p = myPaths[i].getPointAtLength((i * pathLength) / numPoints);
+        polygonPoints.push(p.x);
+        polygonPoints.push(p.y);
+        visited.push(myPaths[i]);
+
+        // So if this is the first loop also get the point at the end of the line.
+        if (i == 0) {
+          var p = myPaths[i].getPointAtLength((1 * pathLength) / numPoints);
+          polygonPoints.push(p.x);
+          polygonPoints.push(p.y);
+        }
+      }
+
+      var myPolygon = document.getElementById("myPolygon");
+      myPolygon.setAttribute("points", polygonPoints.join(","));
+      removePaths(visited);
+    }
+    function removePaths(pathList) {
+      pathList.forEach(function (path) {
+        deletePath(path);
+      });
+    }
+    function deletePath(path) {
+      path.remove();
+    }
+  </script>
 </html>
