@@ -10,8 +10,17 @@
       content="60; URL=file:///Users/nathan/Documents/Hitomezashi-Patterns/drawFunction.html"
     />
     <style>
-      line {
-        stroke-width: 2px;
+      path {
+        fill: none;
+        stroke-width: 2;
+      }
+
+      path.internalSeg {
+        stroke: black;
+      }
+
+      path.borderSeg {
+        stroke: red;
       }
     </style>
   </head>
@@ -56,8 +65,7 @@
           "http://www.w3.org/2000/svg",
           "path"
         );
-
-        upperLineNode.setAttribute("stroke", "red");
+        upperLineNode.setAttribute("class", "borderSeg");
         upperLineNode.setAttribute(
           "d",
           _lineString(lineLength * j, 0, lineLength * (j + 1), 0)
@@ -69,7 +77,7 @@
           "http://www.w3.org/2000/svg",
           "path"
         );
-        lowerlineNode.setAttribute("stroke", "red");
+        lowerlineNode.setAttribute("class", "borderSeg");
         lowerlineNode.setAttribute(
           "d",
           _lineString(
@@ -88,19 +96,20 @@
           "http://www.w3.org/2000/svg",
           "path"
         );
-        leftLineNode.setAttribute("stroke", "red");
+        leftLineNode.setAttribute("class", "borderSeg");
         leftLineNode.setAttribute(
           "d",
           _lineString(0, lineLength * j, 0, lineLength * (j + 1))
         );
         svgNode.appendChild(leftLineNode);
 
-        const lowerlineNode = document.createElementNS(
+        const rightlineNode = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "path"
         );
-        lowerlineNode.setAttribute("stroke", "red");
-        lowerlineNode.setAttribute(
+
+        rightlineNode.setAttribute("class", "borderSeg");
+        rightlineNode.setAttribute(
           "d",
           _lineString(
             vBoxWidth + lineLength,
@@ -110,7 +119,7 @@
           )
         );
 
-        svgNode.appendChild(lowerlineNode);
+        svgNode.appendChild(rightlineNode);
       }
     }
 
@@ -140,7 +149,7 @@
             "http://www.w3.org/2000/svg",
             "path"
           );
-          lineNode.setAttribute("stroke", "black");
+          lineNode.setAttribute("class", "internalSeg");
           lineNode.setAttribute(
             "d",
             _lineString(x, lineLength * j, x, lineLength * (j + 1))
@@ -185,7 +194,7 @@
             "http://www.w3.org/2000/svg",
             "path"
           );
-          lineNode.setAttribute("stroke", "black");
+          lineNode.setAttribute("class", "internalSeg");
           lineNode.setAttribute(
             "d",
             _lineString(lineLength * j, y, lineLength * (j + 1), y)
