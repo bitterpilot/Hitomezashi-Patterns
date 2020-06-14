@@ -16,6 +16,10 @@
         stroke: red;
       }
 
+      .specialSeg {
+        stroke: rebeccapurple;
+      }
+
       #myPolygon {
         stroke-width: 2;
         stroke: royalblue;
@@ -297,47 +301,99 @@
     </svg>
   </body>
   <script>
-    polygonise();
+    const segLength = 40;
 
-    function polygonise() {
-      var myPaths = document.getElementsByClassName("myPath");
-      var numPoints = myPaths.length;
+    let segList = document.getElementsByClassName("internalSeg");
+    let coordinatesMap = mapCoordinates(segList, segLength);
 
-      var pathLength = 0;
-      for (var i = 0; i < numPoints; i++) {
-        pathLength = pathLength + myPaths[i].getTotalLength();
+    joinInternalSeg(segList, coordinatesMap, segLength);
+
+    function mapCoordinates(internalSegList, segLength) {
+      let coordinate = new Map();
+
+      for (let segment of internalSegList) {
+        let beginning = coordinateKey(segment.getPointAtLength(0));
+        let end = coordinateKey(segment.getPointAtLength(segLength));
+
+        pushCoordinate(coordinate, beginning, segment);
+        pushCoordinate(coordinate, end, segment);
       }
 
-      var polygonPoints = [];
-      var visited = [];
-      for (var i = 0; i < numPoints; i++) {
-        // If this the zeroth item then the above code will get the point at length 0.
-        //   i.e. the point at the beginning of the line.
-        //   In the second loop it will get the point at the end of the line
-        var p = myPaths[i].getPointAtLength((i * pathLength) / numPoints);
-        polygonPoints.push(p.x);
-        polygonPoints.push(p.y);
-        visited.push(myPaths[i]);
+      return coordinate;
+    }
 
-        // So if this is the first loop also get the point at the end of the line.
-        if (i == 0) {
-          var p = myPaths[i].getPointAtLength((1 * pathLength) / numPoints);
-          polygonPoints.push(p.x);
-          polygonPoints.push(p.y);
+    function coordinateKey(point) {
+      return `(${point.x},${point.y})`;
+    }
+
+    function pushCoordinate(map, coordinate, segment) {
+      // check if coordinate exists
+      if (map.has(coordinate)) {
+        // if exists then add segment to array
+        let exists = map.get(coordinate);
+        exists.push(segment);
+        map.set(coordinate, exists);
+      } else {
+        // if not then insert segment embedded in array
+        map.set(coordinate, [segment]);
+      }
+    }
+
+    function popCoordinate(map, coordinate, segment) {
+      // remove a coordinate from the map.
+      // safely detecting when there are two segments for a single coordinate.
+      if (map.has(coordinate)) {
+        // get the segments related to the coordinate
+        let segments = map.get(coordinate);
+        // find the segment that matched the one we are deleting
+        let pos = segments.indexOf(segment);
+        // remove it from the array
+        segments.splice(pos, 1);
+
+        if (segments.length != 0) {
+          // if segments is not empty then return the modified array to the map
+          map.set(coordinate, segments);
+        } else {
+          // if segments is empty remove the reference to the coordinate
+          map.delete(coordinate);
         }
       }
+    }
 
-      var myPolygon = document.getElementById("myPolygon");
-      myPolygon.setAttribute("points", polygonPoints.join(","));
-      removePaths(visited);
+    function joinInternalSeg(internalSegList, coordinateMap, segLength) {
+      let firstSeg = internalSegList[0];
+      let beginning = firstSeg.getPointAtLength(0);
+      let end = firstSeg.getPointAtLength(segLength);
+
+      let dString = `M ${beginning.x} ${beginning.y} `;
+      dString = dString + `L ${end.x} ${end.y} `;
+
+      removeSegmentFromMap(coordinateMap, firstSeg, segLength);
+      let nextSegment = getNextSegment(coordinateMap, end);
     }
-    function removePaths(pathList) {
-      pathList.forEach(function (path) {
-        deletePath(path);
-      });
+
+    function removeSegmentFromMap(coordinateMap, firstSeg, segLength) {
+      // convenience function to remove a segment from the coordinateMap
+      let beginning = coordinateKey(firstSeg.getPointAtLength(0));
+      let end = coordinateKey(firstSeg.getPointAtLength(segLength));
+      popCoordinate(coordinateMap, beginning, firstSeg);
+      popCoordinate(coordinateMap, end, firstSeg);
     }
-    function deletePath(path) {
-      path.remove();
+
+    function getNextSegment(corrdinateMap, coordinate) {
+      // finds the next segment with this corrodinate
+      // get all the segments related to the coordinate
+      let segments = corrdinateMap.get(coordinateKey(coordinate));
+      if (segments.length == 1) {
+        // yay there is only one option
+        return segments[0];
+      } else {
+        // not sure this is possible
+        throw new Error(
+          "getNextSegment(), expected an array of length one, received array length ",
+          segments.length
+        );
+      }
     }
   </script>
 </html>
