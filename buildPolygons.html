@@ -370,6 +370,28 @@
 
       removeSegmentFromMap(coordinateMap, firstSeg, segLength);
       let nextSegment = getNextSegment(coordinateMap, end);
+
+      while (nextSegment != undefined) {
+        beginning = nextSegment.getPointAtLength(0);
+        end = nextSegment.getPointAtLength(segLength);
+        removeSegmentFromMap(coordinateMap, nextSegment, segLength);
+
+        if (end == firstSeg.getPointAtLength(0)) {
+          // If the end coordinate equals the first coordinate of the first segment
+          // then complete the polygon
+          makePolygon(dString);
+          nextSegment = undefined;
+        } else {
+          // add the end of this line to the end of the dString
+          dString = dString + `L ${end.x} ${end.y} `;
+
+          if (getNextSegment(coordinateMap, end) == undefined) {
+            // If there is no next segment then the line is at the border
+            makeLine(dString);
+            nextSegment = undefined;
+          }
+        }
+      }
     }
 
     function removeSegmentFromMap(coordinateMap, firstSeg, segLength) {
@@ -384,8 +406,12 @@
       // finds the next segment with this corrodinate
       // get all the segments related to the coordinate
       let segments = corrdinateMap.get(coordinateKey(coordinate));
-      if (segments.length == 1) {
-        // yay there is only one option
+      if (segments == undefined) {
+        // if there is no coordinate for in the map then there are no more
+        // segments to add to the line
+        return undefined;
+      } else if (segments.length == 1) {
+        // If there is there is only one then we return the line
         return segments[0];
       } else {
         // not sure this is possible
@@ -394,6 +420,14 @@
           segments.length
         );
       }
+    }
+
+    function makePolygon(dString) {
+      console.log("make polygon with ", dString);
+    }
+
+    function makeLine(dString) {
+      console.log("make line with ", dString);
     }
   </script>
 </html>
