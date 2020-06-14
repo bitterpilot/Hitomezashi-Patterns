@@ -28,7 +28,7 @@
     </style>
   </head>
   <body>
-    <svg viewBox="-1 -1 660 660" width="560" height="560">
+    <svg id="svgNode" viewBox="-1 -1 660 660" width="560" height="560">
       <path class="borderSeg" d="M 0 0 L 40 0"></path>
       <path class="borderSeg" d="M 0 600 L 40 600"></path>
       <path class="borderSeg" d="M 40 0 L 80 0"></path>
@@ -302,6 +302,7 @@
   </body>
   <script>
     const segLength = 40;
+    const svgNode = document.getElementById("svgNode");
 
     let segList = document.getElementsByClassName("internalSeg");
     let coordinatesMap = mapCoordinates(segList, segLength);
@@ -372,8 +373,19 @@
       let nextSegment = getNextSegment(coordinateMap, end);
 
       while (nextSegment != undefined) {
-        beginning = nextSegment.getPointAtLength(0);
-        end = nextSegment.getPointAtLength(segLength);
+        let p0 = coordinateKey(nextSegment.getPointAtLength(0));
+        let p1 = coordinateKey(nextSegment.getPointAtLength(segLength));
+        // the beginning is the old end coordinate
+        if (coordinateKey(end) == p0) {
+          // if the coordinate keys of p0 and the previous end match
+          beginning = nextSegment.getPointAtLength(0);
+          end = nextSegment.getPointAtLength(segLength);
+        } else {
+          // if the coordinate keys of p0 and the previous end don't match
+          beginning = nextSegment.getPointAtLength(segLength);
+          end = nextSegment.getPointAtLength(0);
+        }
+
         removeSegmentFromMap(coordinateMap, nextSegment, segLength);
 
         if (end == firstSeg.getPointAtLength(0)) {
@@ -389,6 +401,8 @@
             // If there is no next segment then the line is at the border
             makeLine(dString);
             nextSegment = undefined;
+          } else {
+            nextSegment = getNextSegment(coordinateMap, end);
           }
         }
       }
@@ -428,6 +442,14 @@
 
     function makeLine(dString) {
       console.log("make line with ", dString);
+      const upperLineNode = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "path"
+      );
+      upperLineNode.setAttribute("class", "specialSeg");
+      upperLineNode.setAttribute("d", dString);
+
+      svgNode.appendChild(upperLineNode);
     }
   </script>
 </html>
